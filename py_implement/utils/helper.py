@@ -9,3 +9,7 @@ def choose_index(maxnum: int) -> List[int]:
     while dst == src:
         dst = randint(0, maxnum - 1)
     return [src, dst]
+
+
+def is_infinity(distance: int) -> bool:
+    return distance == float("inf")

@@ -1,3 +1,5 @@
+from typing import Union
+
 from helper import *
 
 """utils class to generate graph"""
@@ -20,6 +22,10 @@ class Edge:
         else:
             return False
 
+    def __str__(self) -> str:
+        result = f'[{self.src} {self.dst}]'
+        return result
+
 
 class WeightedEdge(Edge):
     """
@@ -32,6 +38,10 @@ class WeightedEdge(Edge):
         super().__init__(src, dst)
         self.weight = weight
 
+    def __str__(self) -> str:
+        result = f'[{self.src} {self.dst}] {self.weight}'
+        return result
+
 
 class Node:
 
@@ -39,10 +49,20 @@ class Node:
     Graph's node
     """
     name: str
+    parent: Union["Node", None]
 
     def __init__(self, name: str) -> None:
         self.name = name
+        self.parent = None
+        self.distance = float("inf")
         self.edge = []
+
+    def __str__(self) -> str:
+        result = f'{self.name}'
+        return result
+
+    def __eq__(self, other) -> bool:
+        return self.name == other.name
 
     def add_edge(self, edge: "Edge") -> None:
         self.edge.append(edge)
@@ -62,15 +82,41 @@ class Graph:
         self.edge = []
         self.num_node = 0
 
-    def random_generate(self, node_list: List[str], num: int) -> None:
+    def random_generate(self, node_list: List[str], num: int, typ: str="") -> None:
         self.generate_node(node_list)
-        self.random_generate_edge(num)
+        if typ == "w":
+            self.random_generate_weight_edge(num)
+        else:
+            self.random_generate_edge(num)
 
     def generate_node(self, name_list: List[str]) -> None:
         for name in name_list:
             node = Node(name)
             self.node.append(node)
             self.num_node += 1
+
+    def random_generate_weight_edge(self, num: int) -> None:
+
+        if num > self.num_node ** 2:
+            raise Exception("edge count greater than maximum number of possible")
+
+        while num != 0:
+            nodes = choose_index(self.num_node)
+            src = self.node[nodes[0]]
+            dst = self.node[nodes[1]]
+            weight = randint(1, 20)
+            new_edge = WeightedEdge(src, dst, weight)
+
+            while self.check_edge(new_edge):
+                nodes = choose_index(self.num_node)
+                src = self.node[nodes[0]]
+                dst = self.node[nodes[1]]
+                weight = randint(1, 20)
+                new_edge = WeightedEdge(src, dst, weight)
+
+            self.edge.append(new_edge)
+            src.add_edge(new_edge)
+            num -= 1
 
     def random_generate_edge(self, num: int) -> None:
 
@@ -84,7 +130,7 @@ class Graph:
             dst = self.node[nodes[1]]
             new_edge = Edge(src, dst)
 
-            while not self.check_edge(new_edge):
+            while self.check_edge(new_edge):
                 nodes = choose_index(self.num_node)
                 src = self.node[nodes[0]]
                 dst = self.node[nodes[1]]
@@ -96,22 +142,24 @@ class Graph:
 
     def check_edge(self, new_edge: "Edge") -> bool:
         if self.edge == []:
-            return True
+            return False
 
         for edge in self.edge:
             if new_edge == edge:
-                return False
-            else:
                 return True
+        return False
 
     def print_graph(self) -> None:
         for node in self.node:
             edges = node.get_edge()
-            message = f'{node.name}: {edges}\n'
+            edges_name = ""
+            for edge in edges:
+                edges_name += f'{edge} '
+            message = f'{node}: {edges_name}\n'
             print(message)
 
 
 if __name__ == "__main__":
     test = Graph()
-    test.random_generate(["a", "b", "c", "d"], 7)
+    test.random_generate(["a", "b", "c", "d"], 7, "w")
     test.print_graph()
