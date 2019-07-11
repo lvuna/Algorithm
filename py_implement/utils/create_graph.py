@@ -10,9 +10,15 @@ class Edge:
     src: "Node"
     dst: "Node"
 
-    def __init__(self, src: "Node", dst: "Node"):
+    def __init__(self, src: "Node", dst: "Node") -> None:
         self.src = src
         self.dst = dst
+
+    def __eq__(self, other: "Edge") -> bool:
+        if self.src == other.src and self.dst == other.dst:
+            return True
+        else:
+            return False
 
 
 class WeightedEdge(Edge):
@@ -53,6 +59,7 @@ class Graph:
 
     def __init__(self):
         self.node = []
+        self.edge = []
         self.num_node = 0
 
     def random_generate(self, node_list: List[str], num: int) -> None:
@@ -69,14 +76,42 @@ class Graph:
 
         if num > self.num_node ** 2:
             raise Exception("edge count greater than maximum number of possible")
-        #Implement tomorrow
+        # The current version is very slow as the edge count get close to the number of possible edges
+        # Change this later
         while num != 0:
             nodes = choose_index(self.num_node)
             src = self.node[nodes[0]]
             dst = self.node[nodes[1]]
             new_edge = Edge(src, dst)
-            self.check_edge(new_edge)
+
+            while not self.check_edge(new_edge):
+                nodes = choose_index(self.num_node)
+                src = self.node[nodes[0]]
+                dst = self.node[nodes[1]]
+                new_edge = Edge(src, dst)
+
+            self.edge.append(new_edge)
+            src.add_edge(new_edge)
             num -= 1
 
-    def check_edge(self, edge: "Edge") -> None:
-        
+    def check_edge(self, new_edge: "Edge") -> bool:
+        if self.edge == []:
+            return True
+
+        for edge in self.edge:
+            if new_edge == edge:
+                return False
+            else:
+                return True
+
+    def print_graph(self) -> None:
+        for node in self.node:
+            edges = node.get_edge()
+            message = f'{node.name}: {edges}\n'
+            print(message)
+
+
+if __name__ == "__main__":
+    test = Graph()
+    test.random_generate(["a", "b", "c", "d"], 7)
+    test.print_graph()
