@@ -1,5 +1,5 @@
 from typing import Union
-
+from Heap import HeapNode
 from helper import *
 
 """utils class to generate graph"""
@@ -16,18 +16,12 @@ class Edge:
         self.src = src
         self.dst = dst
 
-    def __eq__(self, other: "Edge") -> bool:
-        if self.src == other.src and self.dst == other.dst:
-            return True
-        else:
-            return False
-
     def __str__(self) -> str:
         result = f'[{self.src} {self.dst}]'
         return result
 
 
-class WeightedEdge(Edge):
+class WeightedEdge(Edge, HeapNode):
     """
     edge with weight
     """
@@ -41,6 +35,24 @@ class WeightedEdge(Edge):
     def __str__(self) -> str:
         result = f'[{self.src} {self.dst}] {self.weight}'
         return result
+
+    def __eq__(self, other: "WeightedEdge") -> bool:
+        if self.weight == other.weight:
+            return True
+        else:
+            return False
+
+    def __gt__(self, other: "WeightedEdge") -> bool:
+        if self.weight > other.weight:
+            return True
+        else:
+            return False
+
+    def __lt__(self, other: "WeightedEdge") -> bool:
+        if self.weight < other.weight:
+            return True
+        else:
+            return False
 
 
 class Node:
@@ -141,11 +153,11 @@ class Graph:
             num -= 1
 
     def check_edge(self, new_edge: "Edge") -> bool:
-        if self.edge == []:
+        if not self.edge:
             return False
 
         for edge in self.edge:
-            if new_edge == edge:
+            if check_for_same_edge(edge, new_edge):
                 return True
         return False
 
