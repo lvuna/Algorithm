@@ -1,5 +1,5 @@
 """The implementation of heaps"""
-from math import floor, log, ceil
+from math import floor, log
 
 
 class HeapNode:
@@ -33,7 +33,6 @@ class Heap:
                 result += f'{self.heap[i]}   '
 
         print(result)
-
 
 
 class MaxHeap(Heap):
