@@ -6,10 +6,6 @@ from typing import Union
 class TreeNode:
     """The node in the tree"""
 
-    parent: "TreeNode"
-    left: "TreeNode"
-    right: "TreeNode"
-
     def __init__(self, key: Number, value: Union[object, None]=None) -> None:
         self.parent = None
         self.left = None
@@ -45,8 +41,6 @@ class TreeNode:
 class BinarySearchTree:
     """BST tree implementation"""
 
-    root: "TreeNode"
-
     def __init__(self, root: "TreeNode") -> None:
         self.root = root
 
@@ -54,10 +48,10 @@ class BinarySearchTree:
         return self.root.search(key)
 
     def insert(self, node: "TreeNode") -> None:
-        return insert(self.root, node)
+        insert(self.root, node)
 
     def delete(self, key: Number) -> None:
-        return delete(self.root, key)
+        delete(self.root, key)
 
 
 def visualize(root: "TreeNode") -> None:
