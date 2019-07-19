@@ -17,6 +17,9 @@ class AvlNode(TreeNode):
         result += factor
         return result
 
+    def __eq__(self, other) -> bool:
+        return self.balance == other.balance and self.key == other.key and self.value == other.value
+
 
 class AvlTree(BinarySearchTree):
     """Avl tree implementation"""
@@ -27,6 +30,11 @@ class AvlTree(BinarySearchTree):
     def insert(self, node: "AvlNode") -> None:
         insert(self.root, node)
         fix_factor(node)
+        self.update_root()
+
+    def update_root(self) -> None:
+        while self.root.parent is not None:
+            self.root = self.root.parent
 
     def delete(self, key: Number) -> None:
         delete(self.root, key)
@@ -37,29 +45,88 @@ def insert(root: "AvlNode", node: "AvlNode") -> None:
     if root.key <= node.key:
         if root.right is None:
             node.parent = root
-            root.balance += 1
             root.right = node
         else:
-            root.balance += 1
             insert(root.right, node)
     elif root.key > node.key:
         if root.left is None:
             node.parent = root
-            root.balance -= 1
             root.left = node
         else:
-            root.balance -= 1
             insert(root.left, node)
 
 
 def fix_factor(node: "AvlNode") -> None:
-    pass
+    """Fix the balance factor of each node"""
+    while node.parent is not None:
+        update_factor(node, node.parent)
+        node = node.parent
+        if node.balance == 0:
+            # There is no need to fix further
+            return
+        elif node.balance > 1 or node.balance < -1:
+            rotate(node)
+            # Only 1 rotation is enough
+            return
+
+
+def update_factor(node: "AvlNode", parent: "AvlNode") -> None:
+    if node == parent.left:
+        parent.balance -= 1
+    elif node == parent.right:
+        parent.balance += 1
 
 
 def rotate(node: "AvlNode") -> None:
+    if node.balance == -2:
+        # Left rotate
+        if node.left.balance == -1:
+            left_rotate(node)
+        elif node.left.balance == 1:
+            left_right_rotate(node)
+    elif node.balance == +2:
+        if node.right.balance == 1:
+            right_rotate(node)
+        elif node.right.balance == -1:
+            right_left_rotate(node)
+
+
+def left_rotate(node: "AvlNode") -> None:
+    # set up node
+    rotate_node = node.left
+
+    # change the parent
+    rotate_node.parent = node.parent
+    if node.parent is not None:
+        if node.parent.left == node:
+            node.parent.left = rotate_node
+        else:
+            node.parent.right = rotate_node
+
+    # update node's left children
+    node.left = rotate_node.right
+    if rotate_node.right is not None:
+        rotate_node.right.parent = node.left
+
+    # rotate node
+    rotate_node.right = node
+    node.parent = rotate_node
+    rotate_node.balance = node.balance = 0
+
+
+def right_rotate(node: "AvlNode") -> None:
     pass
 
 
+def left_right_rotate(node: "AvlNode") -> None:
+    pass
+
+
+def right_left_rotate(node: "AvlNode") -> None:
+    pass
+
+
+# To be implemented
 def delete(root: "AvlNode", key: Number) -> None:
     """Delete the node of given if it exists"""
     target = root.search(key)
@@ -114,11 +181,10 @@ if __name__ == "__main__":
     root_node = AvlNode(7)
     test_AVL = AvlTree(root_node)
     node1 = AvlNode(5)
-    node2 = AvlNode(9)
-    node3 = AvlNode(8)
+    node2 = AvlNode(4)
+    node3 = AvlNode(3)
     node4 = AvlNode(2)
     node5 = AvlNode(1)
-    node6 = AvlNode(11)
     test_AVL.insert(node1)
     test_AVL.insert(node2)
     test_AVL.insert(node3)
