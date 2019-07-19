@@ -81,17 +81,21 @@ def rotate(node: "AvlNode") -> None:
     if node.balance == -2:
         # Left rotate
         if node.left.balance == -1:
-            left_rotate(node)
+            right_rotate(node)
         elif node.left.balance == 1:
             left_right_rotate(node)
     elif node.balance == +2:
         if node.right.balance == 1:
-            right_rotate(node)
+            left_rotate(node)
         elif node.right.balance == -1:
             right_left_rotate(node)
 
 
 def left_rotate(node: "AvlNode") -> None:
+    pass
+
+
+def right_rotate(node: "AvlNode") -> None:
     # set up node
     rotate_node = node.left
 
@@ -112,10 +116,6 @@ def left_rotate(node: "AvlNode") -> None:
     rotate_node.right = node
     node.parent = rotate_node
     rotate_node.balance = node.balance = 0
-
-
-def right_rotate(node: "AvlNode") -> None:
-    pass
 
 
 def left_right_rotate(node: "AvlNode") -> None:
