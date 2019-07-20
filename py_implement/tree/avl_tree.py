@@ -18,6 +18,8 @@ class AvlNode(TreeNode):
         return result
 
     def __eq__(self, other) -> bool:
+        if other is None:
+            return False
         return self.balance == other.balance and self.key == other.key and self.value == other.value
 
 
@@ -79,20 +81,46 @@ def update_factor(node: "AvlNode", parent: "AvlNode") -> None:
 
 def rotate(node: "AvlNode") -> None:
     if node.balance == -2:
-        # Left rotate
+        # right rotate
         if node.left.balance == -1:
+            rotated_node = node.left
             right_rotate(node)
+            node.balance = rotated_node.balance = 0
+        # left right rotate
         elif node.left.balance == 1:
             left_right_rotate(node)
+
     elif node.balance == +2:
+        # left rotate
         if node.right.balance == 1:
+            rotated_node = node.right
             left_rotate(node)
+            node.balance = rotated_node.balance = 0
+        # right left rotate
         elif node.right.balance == -1:
             right_left_rotate(node)
 
 
 def left_rotate(node: "AvlNode") -> None:
-    pass
+    # set up node
+    rotate_node = node.right
+
+    # change the parent
+    rotate_node.parent = node.parent
+    if node.parent is not None:
+        if node.parent.left == node:
+            node.parent.left = rotate_node
+        else:
+            node.parent.right = rotate_node
+
+    # update node's right children
+    node.right = rotate_node.left
+    if rotate_node.left is not None:
+        rotate_node.left.parent = node.right
+
+    # rotate node
+    rotate_node.left = node
+    node.parent = rotate_node
 
 
 def right_rotate(node: "AvlNode") -> None:
@@ -115,15 +143,36 @@ def right_rotate(node: "AvlNode") -> None:
     # rotate node
     rotate_node.right = node
     node.parent = rotate_node
-    rotate_node.balance = node.balance = 0
 
 
 def left_right_rotate(node: "AvlNode") -> None:
-    pass
+    first_node = node.left
+    second_node = node.left.right
+    left_rotate(node.left)
+    right_rotate(node)
+    update_balance(first_node, second_node, node)
 
 
 def right_left_rotate(node: "AvlNode") -> None:
-    pass
+    first_node = node.right
+    second_node = first_node.left
+    right_rotate(node.right)
+    left_rotate(node)
+    update_balance(first_node, second_node, node)
+
+
+def update_balance(*argv) -> None:
+    for node in argv:
+        node.balance = height(node.right) - height(node.left)
+
+
+def height(node: "AvlNode") -> int:
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    else:
+        return 1 + max(height(node.left), height(node.right))
 
 
 # To be implemented
@@ -178,16 +227,23 @@ def parent_delete(parent: "AvlNode", target: "AvlNode", childen: "AvlNode"=None)
 
 
 if __name__ == "__main__":
-    root_node = AvlNode(7)
+    root_node = AvlNode(2)
     test_AVL = AvlTree(root_node)
-    node1 = AvlNode(5)
-    node2 = AvlNode(4)
-    node3 = AvlNode(3)
-    node4 = AvlNode(2)
-    node5 = AvlNode(1)
+    node1 = AvlNode(1)
+    node2 = AvlNode(5)
+    node3 = AvlNode(4)
+    node4 = AvlNode(6)
+    node5 = AvlNode(3)
+    node6 = AvlNode(7)
+    node7 = AvlNode(10)
+    node8 = AvlNode(8)
     test_AVL.insert(node1)
     test_AVL.insert(node2)
     test_AVL.insert(node3)
     test_AVL.insert(node4)
     test_AVL.insert(node5)
+    test_AVL.insert(node6)
+    test_AVL.insert(node7)
+    test_AVL.insert(node8)
     visualize(test_AVL.root)
+
