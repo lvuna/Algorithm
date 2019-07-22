@@ -1,5 +1,6 @@
 """The binary search tree implementation, avl included"""
 from numbers import Number
+from tree.helper import predecessor, parent_delete
 from typing import Union
 
 
@@ -23,6 +24,11 @@ class TreeNode:
         else:
             print("The target does not exist")
             return
+
+    def __eq__(self, other) -> bool:
+        if other is None:
+            return False
+        return self.key == other.key
 
     def __str__(self) -> str:
         parent = None
@@ -91,41 +97,10 @@ def delete(root: "TreeNode", key: Number) -> None:
     elif target.right is None and target.left is not None:
         parent_delete(parent, target, target.left)
     else:
-        pred = predecessor(target)
-        target.key = pred.key
-        target.value = pred.value
-        parent_delete(pred.parent, pred)
-
-
-def predecessor(target: "TreeNode") -> "TreeNode":
-    """Find the predecessor of the target"""
-    node = target.right
-    while node.left is not None:
-        node = node.left
-    return node
-
-
-def parent_delete(parent: "TreeNode", target: "TreeNode", childen: "TreeNode"=None) -> None:
-    if parent.left is None:
-        if childen is None:
-            parent.right = None
-        else:
-            parent.right = childen
-    elif parent.right is None:
-        if childen is None:
-            parent.left = None
-        else:
-            parent.left = childen
-    elif parent.left.key == target.key:
-        if childen is None:
-            parent.left = None
-        else:
-            parent.left = childen
-    else:
-        if childen is None:
-            parent.left = None
-        else:
-            parent.right = childen
+        new_target = predecessor(target)
+        target.key = new_target.key
+        target.value = new_target.value
+        parent_delete(new_target.parent, new_target)
 
 
 if __name__ == "__main__":
