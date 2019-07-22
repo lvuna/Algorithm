@@ -1,6 +1,5 @@
 """The binary search tree implementation, avl included"""
 from numbers import Number
-from tree.helper import predecessor, parent_delete
 from typing import Union
 
 
@@ -101,6 +100,27 @@ def delete(root: "TreeNode", key: Number) -> None:
         target.key = new_target.key
         target.value = new_target.value
         parent_delete(new_target.parent, new_target)
+
+
+def predecessor(target: "TreeNode") -> "TreeNode":
+    """Find the predecessor of the target"""
+    node = target.right
+    while node.left is not None:
+        node = node.left
+    return node
+
+
+def parent_delete(parent: "TreeNode", target: "TreeNode", children: "TreeNode"=None) -> None:
+    if parent.left == target:
+        if children is None:
+            parent.left = None
+        else:
+            parent.left = children
+    else:
+        if children is None:
+            parent.right = None
+        else:
+            parent.right = children
 
 
 if __name__ == "__main__":

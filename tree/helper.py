@@ -78,24 +78,3 @@ def height(node: "TreeNode") -> int:
         return 1
     else:
         return 1 + max(height(node.left), height(node.right))
-
-
-def predecessor(target: "TreeNode") -> "TreeNode":
-    """Find the predecessor of the target"""
-    node = target.right
-    while node.left is not None:
-        node = node.left
-    return node
-
-
-def parent_delete(parent: "TreeNode", target: "TreeNode", children: "TreeNode"=None) -> None:
-    if parent.left == target:
-        if children is None:
-            parent.left = None
-        else:
-            parent.left = children
-    else:
-        if children is None:
-            parent.right = None
-        else:
-            parent.right = children

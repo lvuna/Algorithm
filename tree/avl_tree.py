@@ -1,6 +1,6 @@
 """Augmented bst_tree, where the height is balanced"""
 from numbers import Number
-from bst_tree import BinarySearchTree, visualize
+from bst_tree import BinarySearchTree, visualize, predecessor, parent_delete
 from tree.helper import *
 from typing import Union
 
