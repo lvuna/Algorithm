@@ -184,15 +184,27 @@ def delete(root: "AvlNode", key: Number) -> None:
         return
     if target.left is None and target.right is None:
         parent_delete(parent, target)
+        update_balance_after_delete(parent)
     elif target.left is None and target.right is not None:
         parent_delete(parent, target, target.right)
+        update_balance_after_delete(parent)
     elif target.right is None and target.left is not None:
         parent_delete(parent, target, target.left)
+        update_balance_after_delete(parent)
     else:
-        pred = predecessor(target)
-        target.key = pred.key
-        target.value = pred.value
-        parent_delete(pred.parent, pred)
+        new_target = predecessor(target)
+        target.key = new_target.key
+        target.value = new_target.value
+        parent_delete(new_target.parent, new_target)
+        update_balance_after_delete(new_target.parent)
+
+
+def update_balance_after_delete(node: "AvlNode") -> None:
+    while node is not None:
+        update_balance(node)
+        if node.balance > 1 or node.balance < -1:
+            rotate(node)
+        node = node.parent
 
 
 def predecessor(target: "AvlNode") -> "AvlNode":
@@ -203,27 +215,27 @@ def predecessor(target: "AvlNode") -> "AvlNode":
     return node
 
 
-def parent_delete(parent: "AvlNode", target: "AvlNode", childen: "AvlNode"=None) -> None:
+def parent_delete(parent: "AvlNode", target: "AvlNode", children: "AvlNode"=None) -> None:
     if parent.left is None:
-        if childen is None:
+        if children is None:
             parent.right = None
         else:
-            parent.right = childen
+            parent.right = children
     elif parent.right is None:
-        if childen is None:
+        if children is None:
             parent.left = None
         else:
-            parent.left = childen
+            parent.left = children
     elif parent.left.key == target.key:
-        if childen is None:
+        if children is None:
             parent.left = None
         else:
-            parent.left = childen
+            parent.left = children
     else:
-        if childen is None:
+        if children is None:
             parent.left = None
         else:
-            parent.right = childen
+            parent.right = children
 
 
 if __name__ == "__main__":
@@ -245,5 +257,6 @@ if __name__ == "__main__":
     test_AVL.insert(node6)
     test_AVL.insert(node7)
     test_AVL.insert(node8)
+    test_AVL.delete(7)
+    test_AVL.delete(5)
     visualize(test_AVL.root)
-
