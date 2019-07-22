@@ -1,9 +1,9 @@
 # Algorithm
-Implementation of different algorithms in different languages.
+Implementation of different algorithms in python.
 
-The goal is to revisit the Algorithm and data structure learned for solidifying understanding.
+The goal is to revisit and implement the Algorithms and data structures learned for solidifying understanding.
 
-The data structure were implemented for self study purpose only, and it will not be standard.
+The data structures were implemented for self study purpose only, and it will not be standard.
 
 ![](asset/Kaguya.jpg)
 @by drak95 from alphacoders https://wall.alphacoders.com/big.php?i=1003376
