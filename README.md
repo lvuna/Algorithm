@@ -1,10 +1,11 @@
 # Algorithm
 Implementation of different algorithms in python.
 
-The goal is to revisit and implement the Algorithms and data structures learned for solidifying understanding.
+The goal is to revisit and implement the Algorithms and data structures learned for solidifying understanding, create the visualization of data structures and algorithms.
 
 The data structures were implemented for self study purpose only, and it will not be standard.
 
+Notes will also be pushed to corresponding repository later on. 
 ![](asset/Kaguya.jpg)
 @by drak95 from alphacoders https://wall.alphacoders.com/big.php?i=1003376
 ## Topics
