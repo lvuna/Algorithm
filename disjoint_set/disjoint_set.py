@@ -11,7 +11,6 @@ class TreeNode:
         self.key = key
         self.parent = None
         self.height = 0
-        self.children = []
 
     def __eq__(self, other) -> bool:
         return self is other
@@ -62,7 +61,6 @@ def union(node1: "TreeNode", node2: "TreeNode") -> None:
     root1 = find(node1)
     root2 = find(node2)
     if root1 != root2:
-        root1.children.append(root2)
         if root1.height == root2.height:
             root1.height += 1
         elif root1.height < root2.height:
@@ -76,14 +74,53 @@ def wu_union(node1: "TreeNode", node2: "TreeNode") -> None:
     root2 = find(node2)
     if root1 != root2:
         if root1.height > root2.height:
-            root1.children.append(root2)
             root2.parent = root1
         elif root1.height == root2.height:
-            root1.children.append(root2)
             root1.height += 1
             root2.parent = root1
         else:
-            root2.children.append(root1)
+            root1.parent = root2
+
+
+# Utilizes path compression heuristics to reduce time complexity
+def pc_union(node1: "TreeNode", node2: "TreeNode") -> None:
+    root1 = find(node1)
+    root2 = find(node2)
+    if root1 != root2:
+        if root1.height == root2.height:
+            root1.height += 1
+        elif root1.height < root2.height:
+            root1.height = root2.height + 1
+        while node2.parent is not None:
+            parent_node = node2.parent
+            node2.parent = root1
+            node2 = parent_node
+        root2.parent = root1
+
+
+# Utilizes both heuristics to reduce time complexity
+def pc_wu_union(node1: "TreeNode", node2: "TreeNode") -> None:
+    root1 = find(node1)
+    root2 = find(node2)
+    if root1 != root2:
+        if root1.height > root2.height:
+            while node2.parent is not None:
+                parent_node = node2.parent
+                node2.parent = root1
+                node2 = parent_node
+            root2.parent = root1
+        elif root1.height == root2.height:
+            root1.height += 1
+            while node2.parent is not None:
+                parent_node = node2.parent
+                node2.parent = root1
+                node2 = parent_node
+            root2.parent = root1
+        else:
+            while node1.parent is not None:
+                parent_node = node1.parent
+                node1.parent = root2
+                node1 = parent_node
             root1.parent = root2
 
 
@@ -111,3 +148,5 @@ def test_runtime(union_method, union_method_name, num_elements, num_union) -> No
 if __name__ == "__main__":
     test_runtime(union, "union", 1000000, 600000)
     test_runtime(wu_union, "wu_union", 1000000, 600000)
+    test_runtime(pc_union, "pc_union", 1000000, 600000)
+    test_runtime(pc_wu_union, "pc_wu_union", 1000000, 600000)
