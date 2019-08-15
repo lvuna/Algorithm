@@ -61,13 +61,17 @@ class Node:
     Graph's node
     """
     name: str
+    distance: float
+    color: str
     parent: Union["Node", None]
 
     def __init__(self, name: str) -> None:
         self.name = name
         self.parent = None
+        self.color = "white"
         self.distance = float("inf")
         self.edge = []
+        self.neighbour = []
 
     def __str__(self) -> str:
         result = f'{self.name}'
@@ -128,6 +132,7 @@ class Graph:
 
             self.edge.append(new_edge)
             src.add_edge(new_edge)
+            src.neighbour.append(dst)
             num -= 1
 
     def random_generate_edge(self, num: int) -> None:
@@ -150,6 +155,7 @@ class Graph:
 
             self.edge.append(new_edge)
             src.add_edge(new_edge)
+            src.neighbour.append(dst)
             num -= 1
 
     def check_edge(self, new_edge: "Edge") -> bool:
@@ -160,6 +166,12 @@ class Graph:
             if check_for_same_edge(edge, new_edge):
                 return True
         return False
+
+    def find_node(self, name: str) -> Node:
+        for node in self.node:
+            if node.name == name:
+                return node
+        return None
 
     def print_graph(self) -> None:
         for node in self.node:
