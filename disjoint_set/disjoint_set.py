@@ -146,7 +146,12 @@ def test_runtime(union_method, union_method_name, num_elements, num_union) -> No
 
 
 if __name__ == "__main__":
-    test_runtime(union, "union", 1000000, 600000)
-    test_runtime(wu_union, "wu_union", 1000000, 600000)
-    test_runtime(pc_union, "pc_union", 1000000, 600000)
-    test_runtime(pc_wu_union, "pc_wu_union", 1000000, 600000)
+    # heuristics vs. non heuristics
+    # test_runtime(union, "union", 1000000, 600000)
+    # test_runtime(wu_union, "wu_union", 1000000, 600000)
+    # test_runtime(pc_union, "pc_union", 1000000, 600000)
+
+    # heuristics vs. double heuristics
+    test_runtime(wu_union, "wu_union", 2000000, 1600000)
+    test_runtime(pc_union, "pc_union", 2000000, 1600000)
+    test_runtime(pc_wu_union, "pc_wu_union", 2000000, 1600000)
