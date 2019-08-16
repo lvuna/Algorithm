@@ -23,17 +23,18 @@ def breadth_first_search(graph: Graph, root: Node) -> None:
         current_node.color = "black"
 
 
-def find_shortest_path(src: Node, dst: Node) -> None:
+def find_shortest_path(graph: Graph, root: Node, dst: Node) -> None:
+    breadth_first_search(graph, root)
     if dst.parent is None:
         print("No path exists between 2 nodes")
         return
     result = ""
-    while dst != src:
+    while dst != root:
         temp = f" -> {dst.name}"
         temp += result
         result = temp
         dst = dst.parent
-    print(src.name + result)
+    print(root.name + result)
 
 
 if __name__ == "__main__":
@@ -41,6 +42,5 @@ if __name__ == "__main__":
     graph1.random_generate(["a", "b", "c", "d", "e", "f", "g", "h"], 17)
     graph1.print_graph()
     root_node = graph1.find_node("c")
-    breadth_first_search(graph1, root_node)
     target = graph1.find_node("f")
-    find_shortest_path(root_node, target)
+    find_shortest_path(graph1, root_node, target)
