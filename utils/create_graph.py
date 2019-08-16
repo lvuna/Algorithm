@@ -1,5 +1,5 @@
 from typing import Union
-from Heap import HeapNode
+from heap.Heap import HeapNode
 from utils.helper import *
 
 """utils class to generate graph"""
@@ -19,6 +19,9 @@ class Edge:
     def __str__(self) -> str:
         result = f'[{self.src} {self.dst}]'
         return result
+
+    def __hash__(self) -> int:
+        return hash(self.src.name + self.dst.name)
 
 
 class WeightedEdge(Edge, HeapNode):
@@ -53,6 +56,9 @@ class WeightedEdge(Edge, HeapNode):
             return True
         else:
             return False
+
+    def __hash__(self) -> int:
+        return hash(self.src.name + self.dst.name)
 
 
 class Node:
@@ -117,6 +123,8 @@ class Graph:
 
         if num > self.num_node ** (self.num_node - 1):
             raise Exception("edge count greater than maximum number of possible")
+        hash_table = [[] for _ in range(num//6 + 1)]
+        length = len(hash_table)
 
         while num != 0:
             nodes = choose_index(self.num_node)
@@ -125,7 +133,7 @@ class Graph:
             weight = randint(1, 20)
             new_edge = WeightedEdge(src, dst, weight)
 
-            while self.check_edge(new_edge):
+            while has_edge(hash_table, new_edge):
                 nodes = choose_index(self.num_node)
                 src = self.node[nodes[0]]
                 dst = self.node[nodes[1]]
@@ -133,6 +141,8 @@ class Graph:
                 new_edge = WeightedEdge(src, dst, weight)
 
             self.edge.append(new_edge)
+            index = hash(new_edge) % length
+            hash_table[index].append(new_edge)
             src.add_edge(new_edge)
             src.neighbour.append(dst)
             num -= 1
@@ -141,33 +151,28 @@ class Graph:
 
         if num > self.num_node * (self.num_node - 1):
             raise Exception("edge count greater than maximum number of possible")
-        # The current version is very slow as the edge count get close to the number of possible edges
-        # Change this later
+        # v1.01 Speed up the process by using a simplified hash table,
+        # with expected number of edges in each brackets being 6.
+        hash_table = [[] for _ in range(num//6 + 1)]
+        length = len(hash_table)
         while num != 0:
             nodes = choose_index(self.num_node)
             src = self.node[nodes[0]]
             dst = self.node[nodes[1]]
             new_edge = Edge(src, dst)
 
-            while self.check_edge(new_edge):
+            while has_edge(hash_table, new_edge):
                 nodes = choose_index(self.num_node)
                 src = self.node[nodes[0]]
                 dst = self.node[nodes[1]]
                 new_edge = Edge(src, dst)
 
             self.edge.append(new_edge)
+            index = hash(new_edge) % length
+            hash_table[index].append(new_edge)
             src.add_edge(new_edge)
             src.neighbour.append(dst)
             num -= 1
-
-    def check_edge(self, new_edge: "Edge") -> bool:
-        if not self.edge:
-            return False
-
-        for edge in self.edge:
-            if check_for_same_edge(edge, new_edge):
-                return True
-        return False
 
     def find_node(self, name: str) -> Node:
         for node in self.node:
@@ -183,6 +188,14 @@ class Graph:
                 edges_name += f'{edge} '
             message = f'{node} {node.distance} {node.f_time}: {edges_name}\n'
             print(message)
+
+
+def has_edge(table: list, new_edge: "Edge") -> bool:
+    index = hash(new_edge) % len(table)
+    for edge in table[index]:
+        if is_same_edge(edge, new_edge):
+            return True
+    return False
 
 
 if __name__ == "__main__":
