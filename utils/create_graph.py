@@ -128,14 +128,14 @@ class Graph:
         length = len(hash_table)
 
         while num != 0:
-            nodes = choose_index(self.num_node)
+            nodes = random_index(self.num_node)
             src = self.node[nodes[0]]
             dst = self.node[nodes[1]]
             weight = randint(1, 20)
             new_edge = WeightedEdge(src, dst, weight)
 
             while has_edge(hash_table, new_edge):
-                nodes = choose_index(self.num_node)
+                nodes = random_index(self.num_node)
                 src = self.node[nodes[0]]
                 dst = self.node[nodes[1]]
                 weight = randint(1, 20)
@@ -157,13 +157,13 @@ class Graph:
         hash_table = [[] for _ in range(num//6 + 1)]
         length = len(hash_table)
         while num != 0:
-            nodes = choose_index(self.num_node)
+            nodes = random_index(self.num_node)
             src = self.node[nodes[0]]
             dst = self.node[nodes[1]]
             new_edge = Edge(src, dst)
 
             while has_edge(hash_table, new_edge):
-                nodes = choose_index(self.num_node)
+                nodes = random_index(self.num_node)
                 src = self.node[nodes[0]]
                 dst = self.node[nodes[1]]
                 new_edge = Edge(src, dst)
@@ -199,11 +199,11 @@ def has_edge(table: list, new_edge: "Edge") -> bool:
     return False
 
 
-def choose_index(maxnum: int) -> List[int]:
-    src = randint(0, maxnum - 1)
-    dst = randint(0, maxnum - 1)
+def random_index(max_num: int) -> List[int]:
+    src = randint(0, max_num - 1)
+    dst = randint(0, max_num - 1)
     while dst == src:
-        dst = randint(0, maxnum - 1)
+        dst = randint(0, max_num - 1)
     return [src, dst]
 
 
