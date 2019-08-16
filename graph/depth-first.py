@@ -156,7 +156,7 @@ def generate_random_name(n: int) -> list:
 
 if __name__ == "__main__":
     graph1 = Graph()
-    num = 30000
+    num = 10000
     arr = generate_random_name(num)
     graph1.random_generate(arr, num)
     start = time.time()
