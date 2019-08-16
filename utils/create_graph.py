@@ -62,6 +62,7 @@ class Node:
     """
     name: str
     distance: float
+    f_time: int
     color: str
     parent: Union["Node", None]
 
@@ -70,6 +71,7 @@ class Node:
         self.parent = None
         self.color = "white"
         self.distance = float("inf")
+        self.f_time = float("inf")
         self.edge = []
         self.neighbour = []
 
@@ -78,7 +80,7 @@ class Node:
         return result
 
     def __eq__(self, other) -> bool:
-        return self.name == other.name
+        return self is other
 
     def add_edge(self, edge: "Edge") -> None:
         self.edge.append(edge)
@@ -113,7 +115,7 @@ class Graph:
 
     def random_generate_weight_edge(self, num: int) -> None:
 
-        if num > self.num_node ** 2:
+        if num > self.num_node ** (self.num_node - 1):
             raise Exception("edge count greater than maximum number of possible")
 
         while num != 0:
@@ -137,7 +139,7 @@ class Graph:
 
     def random_generate_edge(self, num: int) -> None:
 
-        if num > self.num_node ** 2:
+        if num > self.num_node * (self.num_node - 1):
             raise Exception("edge count greater than maximum number of possible")
         # The current version is very slow as the edge count get close to the number of possible edges
         # Change this later
@@ -179,7 +181,7 @@ class Graph:
             edges_name = ""
             for edge in edges:
                 edges_name += f'{edge} '
-            message = f'{node}: {edges_name}\n'
+            message = f'{node} {node.distance} {node.f_time}: {edges_name}\n'
             print(message)
 
 
