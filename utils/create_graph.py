@@ -1,6 +1,7 @@
 from typing import Union
+from typing import List
+from random import randint
 from heap.Heap import HeapNode
-from utils.helper import *
 
 """utils class to generate graph"""
 
@@ -196,6 +197,25 @@ def has_edge(table: list, new_edge: "Edge") -> bool:
         if is_same_edge(edge, new_edge):
             return True
     return False
+
+
+def choose_index(maxnum: int) -> List[int]:
+    src = randint(0, maxnum - 1)
+    dst = randint(0, maxnum - 1)
+    while dst == src:
+        dst = randint(0, maxnum - 1)
+    return [src, dst]
+
+
+def is_infinity(distance: int) -> bool:
+    return distance == float("inf")
+
+
+def is_same_edge(edge1: "Edge", edge2: "Edge"):
+    if edge1.src == edge2.src and edge1.dst == edge2.dst:
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
